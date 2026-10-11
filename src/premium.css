@@ -144,3 +144,28 @@ body:has(.main-content .embedded-chat) .app-shell{padding-bottom:66px}
 .challenges-page>.challenge-error{display:flex;align-items:center;gap:8px;margin:12px auto;padding:12px 14px;max-width:900px;border:1px solid var(--rose);border-radius:12px;background:var(--rose-soft);color:var(--text);font-size:11px}
 .challenges-page>.challenge-error span{flex:1}
 @media(max-width:760px){.challenges-page>.section-head{align-items:stretch}.challenges-page>.section-head>.btn{align-self:flex-start}.challenge-empty{min-height:210px;padding:22px 16px}.history-challenge{padding:17px}.challenge-question{padding:13px;font-size:13px}.challenge-actions>.btn{width:100%;justify-content:center}}
+
+/* AI Coach is a top navigation mode that fills the space below the top bar. */
+.coach-switch{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font-size:13px;transition:background .18s,color .18s,border-color .18s}
+.coach-switch i{width:25px;height:14px;position:relative;border-radius:999px;background:var(--line);transition:background .18s}
+.coach-switch i::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:var(--surface);transition:transform .18s}
+.coach-switch.active{border-color:var(--teal);background:var(--teal-soft);color:var(--teal)}
+.coach-switch.active i{background:var(--teal)}.coach-switch.active i::after{transform:translateX(11px)}
+.account-credit{display:flex;align-items:center;gap:11px;width:max-content;margin:18px 0;padding:12px 15px;border-radius:14px;background:var(--amber-soft);color:var(--amber)}
+.account-credit>span{display:grid;gap:1px}.account-credit small{font-size:10px;font-weight:700;letter-spacing:.7px}.account-credit strong{font:700 22px Manrope}.account-credit em{margin-left:8px;color:var(--muted);font-size:12px;font-style:normal}
+.main-content{width:min(1400px,100%);padding-inline:clamp(20px,4vw,64px)}
+.dashboard-layout{gap:32px}.section-head{gap:20px;margin-bottom:21px}.metric-grid{gap:16px;margin-bottom:20px}.chart-grid,.bottom-panels{gap:18px;margin-bottom:18px}.card-heading p,.section-sub{font-size:12px}.side-nav>button{font-size:13px}.metric-top>span:first-child{font-size:10px}.metric-delta{font-size:10px}.card-heading h3,.support-card h3,.skill-list-card h3,.recommendations-card h3,.mission-card h3,.focus-challenge h3{font-size:15px}
+body:has(.main-content.coach-main) .footerbar{display:none}
+body:has(.main-content.coach-main) .app-shell{min-height:100dvh;padding:68px 0 0}
+.main-content.coach-main{width:100%;height:calc(100dvh - 68px);min-height:0;padding:0;overflow:hidden}
+.coach-main .dashboard-layout.coach-mode{height:100%;min-height:0;grid-template-columns:minmax(0,1fr);gap:0;overflow:hidden}
+.coach-main .dashboard-layout.coach-mode .side-nav{display:none}
+.coach-main .dashboard-layout.coach-mode .dash-body{height:100%;min-height:0;padding:14px clamp(14px,3vw,42px);overflow:hidden}
+.coach-main .embedded-chat{width:100%;height:100%;min-height:0;max-height:none;margin:0;overflow:hidden}
+.coach-main .embedded-chat .chat-panel{width:100%;height:100%;min-height:0;max-height:none}
+@media(max-width:760px){.main-content{padding-inline:15px}.dashboard-layout{gap:16px}.coach-switch{gap:5px;padding:6px 8px;font-size:11px}.coach-switch i{width:23px}.coach-switch.active i::after{transform:translateX(9px)}.main-content.coach-main{height:calc(100dvh - 58px)}body:has(.main-content.coach-main) .app-shell{padding-top:58px}.coach-main .dashboard-layout.coach-mode .dash-body{padding:8px}.coach-main .embedded-chat .chat-panel{padding:10px}}
+@media(max-width:760px){.topnav .coach-switch{display:inline-flex}}
+.section-head h2{font-size:25px}.recommendation strong{font-size:12px}.recommendation p{font-size:11px}
+/* Give the full-screen Coach view an extra quarter of vertical workspace. */
+.main-content.coach-main{height:calc((100dvh - 68px)*1.25);min-height:calc((100dvh - 68px)*1.25);overflow:visible}
+@media(max-width:760px){.main-content.coach-main{height:calc((100dvh - 58px)*1.25);min-height:calc((100dvh - 58px)*1.25)}}
