@@ -15,6 +15,10 @@ npm run dev
 
 Copy `.env.example` to `.env` and add a Gemini API key to enable AI replies. Keep that key in the server `.env` file; do not use a `VITE_` prefix or commit the key. The app can still be explored without a key, but AI chat will show a setup message.
 
+## Shared profile storage
+
+Create a Supabase project, then run the SQL files in `supabase/migrations` in filename order from the Supabase SQL Editor. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from the project API settings to `.env.local` for local development and to the Vercel project’s Production environment variables. These are the browser-safe project URL and publishable key; never use the Supabase service-role key in the frontend. Redeploy after adding the Vercel variables. Supabase Auth then signs users in across devices, and row-level security limits each profile document to its account owner.
+
 `npm run dev` starts the Vite frontend and local Express API. `npm test` runs prompt/workflow contract checks; `npm run build` creates the production frontend bundle. `npm start` serves the production preview and API locally. The interface loads DM Sans and Manrope from Google Fonts when network access is available; system sans-serif fonts are used as fallback.
 
 ## Demo accounts
