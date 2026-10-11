@@ -17,7 +17,7 @@ Copy `.env.example` to `.env` and add a Gemini API key to enable AI replies. Kee
 
 ## Shared profile storage
 
-Create a Supabase project, then run the SQL files in `supabase/migrations` in filename order from the Supabase SQL Editor. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from the project API settings to `.env.local` for local development and to the Vercel project’s Production environment variables. These are the browser-safe project URL and publishable key; never use the Supabase service-role key in the frontend. Redeploy after adding the Vercel variables. Supabase Auth then signs users in across devices, and row-level security limits each profile document to its account owner.
+Create a Supabase project, then run every SQL file in `supabase/migrations` in filename order from the Supabase SQL Editor. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from the project API settings to `.env.local` for local development and to the Vercel project’s Production environment variables. These are the browser-safe project URL and publishable key; never use the Supabase service-role key in the frontend. Redeploy after adding the Vercel variables. Supabase Auth then signs users in across devices, row-level security limits each profile document to its account owner, and the plan-credit migration enforces daily AI query allowances in the database. Pricing activation and checkout are demo-only until a payment provider is connected.
 
 `npm run dev` starts the Vite frontend and local Express API. `npm test` runs prompt/workflow contract checks; `npm run build` creates the production frontend bundle. `npm start` serves the production preview and API locally. The interface loads DM Sans and Manrope from Google Fonts when network access is available; system sans-serif fonts are used as fallback.
 
@@ -73,13 +73,13 @@ The application state models users, groups, sessions, skill metrics, and credit 
 
 ## Shared database design for multiple devices
 
-The first shared-data design is Supabase PostgreSQL. Its schema is in `supabase/migrations/202610110001_shared_progress.sql`. This migration is a design artifact only: the current app still reads and writes browser `localStorage`, so cross-device sync is not active yet.
+The shared-data backend is Supabase PostgreSQL. Run every SQL file in `supabase/migrations` in filename order. The app uses Supabase Auth and owner-only profile documents for cloud profiles, account data, sessions, and credit transactions. Browser storage still holds a local cache and demo profiles.
 
 The shared database stores authenticated profiles, group memberships and invites, activity scores and safe game measurements, per-skill stats, XP awards, and the Think Credit ledger. Supabase Auth owns passwords and login sessions. Private mission answers and reflections use an owner-only table. AI Coach history, drafts, theme, and device preferences stay local by default; chat is private and is not needed to calculate shared progress.
 
-The migration enables Row Level Security. Members can read their own progress. Group supervisors receive a narrow roster and aggregate activity API; they cannot read chat, mission answers, or private reflections. XP and credit ledgers are append-only from the client's perspective, with writes reserved for trusted server functions. Unique idempotency keys prevent two devices from awarding the same reward twice.
+The migrations enable Row Level Security. Migration `202610110004_group_invites.sql` creates and redeems hashed group codes through role-checked RPCs. Its supervisor RPC returns only the group roster and safe session fields; it omits email, passwords, answers, and reflections. XP and credit ledgers use idempotent database functions.
 
-To activate sync, the app still needs Supabase Auth in place of its demo/local login, a trusted API or Edge Functions to create profiles and memberships and record activity/rewards transactionally, and a client data layer that loads and saves this account data instead of `mindledger.v1` localStorage. Configure the Supabase URL and publishable key in the deployed frontend, and keep the service-role key only in trusted server secrets. Do not migrate demo passwords or seed accounts as real users. Do not expose service credentials in frontend variables.
+Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in local development and Vercel Production. Redeploy after changing Vercel variables. The Supabase RPC migration is required for cross-device group creation, child/student/worker code redemption, and supervisor analytics. Demo profiles remain browser-only; do not migrate their passwords as real accounts. Never expose service-role credentials in frontend variables.
 
 Before inviting real users, review account deletion, backup/restore, consent and retention for minors and organizations, and role permissions with representative accounts. A Supabase project and credentials are required before the schema can be applied to a live database.
 
