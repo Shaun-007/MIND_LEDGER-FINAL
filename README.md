@@ -1,5 +1,7 @@
 # MindLedger
 
+ADDIL
+
 **Unlimited AI, earned by thinking.** A responsive local-first prototype for building healthier AI-use habits through independent practice, focus sessions, short breaks, and progress tracking.
 
 ## Run locally
