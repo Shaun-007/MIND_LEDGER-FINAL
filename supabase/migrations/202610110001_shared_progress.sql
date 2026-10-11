@@ -131,32 +131,46 @@ alter table public.skill_stats enable row level security;
 alter table public.xp_ledger enable row level security;
 alter table public.credit_ledger enable row level security;
 
+drop policy if exists "profile owner reads self" on public.profiles;
 create policy "profile owner reads self" on public.profiles for select to authenticated
   using (id = (select auth.uid()));
+drop policy if exists "profile owner edits basic details" on public.profiles;
 create policy "profile owner edits basic details" on public.profiles for update to authenticated
   using (id = (select auth.uid())) with check (id = (select auth.uid()));
+drop policy if exists "group members read group" on public.groups;
 create policy "group members read group" on public.groups for select to authenticated
   using (public.is_group_member(id));
+drop policy if exists "group owner updates group" on public.groups;
 create policy "group owner updates group" on public.groups for update to authenticated
   using (owner_id = (select auth.uid())) with check (owner_id = (select auth.uid()));
+drop policy if exists "authenticated owners create groups" on public.groups;
 create policy "authenticated owners create groups" on public.groups for insert to authenticated
   with check (owner_id = (select auth.uid()));
+drop policy if exists "members read own membership or managers read roster" on public.group_memberships;
 create policy "members read own membership or managers read roster" on public.group_memberships for select to authenticated
   using (user_id = (select auth.uid()) or public.can_manage_group(group_id));
+drop policy if exists "managers add memberships" on public.group_memberships;
 create policy "managers add memberships" on public.group_memberships for insert to authenticated
   with check (public.can_manage_group(group_id));
+drop policy if exists "managers remove memberships" on public.group_memberships;
 create policy "managers remove memberships" on public.group_memberships for delete to authenticated
   using (public.can_manage_group(group_id));
+drop policy if exists "managers manage invites" on public.group_invites;
 create policy "managers manage invites" on public.group_invites for all to authenticated
   using (public.can_manage_group(group_id)) with check (public.can_manage_group(group_id));
+drop policy if exists "member owns activity" on public.activity_sessions;
 create policy "member owns activity" on public.activity_sessions for all to authenticated
   using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+drop policy if exists "member owns private reflections" on public.private_reflections;
 create policy "member owns private reflections" on public.private_reflections for all to authenticated
   using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+drop policy if exists "member owns skill stats" on public.skill_stats;
 create policy "member owns skill stats" on public.skill_stats for all to authenticated
   using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+drop policy if exists "member reads own xp ledger" on public.xp_ledger;
 create policy "member reads own xp ledger" on public.xp_ledger for select to authenticated
   using (user_id = (select auth.uid()));
+drop policy if exists "member reads own credit ledger" on public.credit_ledger;
 create policy "member reads own credit ledger" on public.credit_ledger for select to authenticated
   using (user_id = (select auth.uid()));
 
